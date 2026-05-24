@@ -35,7 +35,7 @@
 
   <!-- Percentage input (percentage of balance to risk) -->
   <div class="input-group">
-    <label>📊 Risk percentage (%) <i>of account balance to risk</i></label>
+    <label>📊 Risk percentage (%) <i>of acc. balance to risk</i></label>
     <div class="input-field">
       <span>%</span>
       <input type="tel" id="percentageInput" value="1" step="0.1" placeholder="e.g., 1.5">
@@ -45,7 +45,7 @@
   <!-- Dynamic display: shows calculated percentage amount -->
   <div class="calc-preview">
     <div class="info-row">
-      <span class="info-label">💰 Risk amount (balance × % ÷ 100):</span>
+      <span class="info-label">💰 Risk amt (bal × % ÷ 100):</span>
       <span class="info-value" id="riskAmountDisplay">$0.00</span>
     </div>
   </div>
@@ -55,7 +55,7 @@
     <label>📈 Entry point <i>(price level)</i></label>
     <div class="input-field">
       <span>📌</span>
-      <input type="tel" id="entryPoint" value="4509" step="1" placeholder="e.g., 4509">
+      <input type="tel" id="entryPoint" value="0" step="1" placeholder="e.g., 4509">
     </div>
   </div>
 
@@ -64,14 +64,14 @@
     <label>🛑 Stop loss <i>(price level)</i></label>
     <div class="input-field">
       <span>⛔</span>
-      <input type="tel" id="stopLoss" value="4452" step="1" placeholder="e.g., 4452">
+      <input type="tel" id="stopLoss" value="0" step="1" placeholder="e.g., 4452">
     </div>
   </div>
 
   <!-- Stop distance display (helper) -->
   <div class="calc-preview" style="margin-top: -0.5rem;">
     <div class="info-row">
-      <span class="info-label">📏 Stop distance (Entry - Stop Loss):</span>
+      <span class="info-label">📏  distance Pips (Entry - S.L):</span>
       <span class="info-value" id="stopDistanceDisplay">0.00</span>
     </div>
   </div>
