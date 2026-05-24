@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Cisco Risk | Position Sizing Tool</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="glass-card">
+  <h1>⚡ Precision risk tool</h1>
+  <div class="subhead">Confirm conditions • Smart lot size calculator</div>
+
+  <!-- 2 checkboxes: Directions & Confirmation (mandatory for submit) -->
+  <div class="checks-container">
+    <div class="check-item">
+      <input type="checkbox" id="directionsCheckbox">
+      <label for="directionsCheckbox">📍 Do you know the direction? <span class="hint">(required)</span></label>
+    </div>
+    <div class="check-item">
+      <input type="checkbox" id="confirmationCheckbox">
+      <label for="confirmationCheckbox">✅ Is there confirmation? <span class="hint">(required)</span></label>
+    </div>
+  </div>
+
+  <!-- Account Balance input (default = 2000) -->
+  <div class="input-group">
+    <label>💰 Account balance <i>(base capital)</i></label>
+    <div class="input-field">
+      <span>$</span>
+      <input type="number" id="accountBalance" value="2000" step="10">
+    </div>
+  </div>
+
+  <!-- Percentage input (percentage of balance to risk) -->
+  <div class="input-group">
+    <label>📊 Risk percentage (%) <i>of account balance to risk</i></label>
+    <div class="input-field">
+      <span>%</span>
+      <input type="number" id="percentageInput" value="1" step="0.1" placeholder="e.g., 1.5">
+    </div>
+  </div>
+
+  <!-- Dynamic display: shows calculated percentage amount -->
+  <div class="calc-preview">
+    <div class="info-row">
+      <span class="info-label">💰 Risk amount (balance × % ÷ 100):</span>
+      <span class="info-value" id="riskAmountDisplay">$0.00</span>
+    </div>
+  </div>
+
+  <!-- Entry point field -->
+  <div class="input-group">
+    <label>📈 Entry point <i>(price level)</i></label>
+    <div class="input-field">
+      <span>📌</span>
+      <input type="number" id="entryPoint" value="4509" step="1" placeholder="e.g., 4509">
+    </div>
+  </div>
+
+  <!-- Stop Loss field -->
+  <div class="input-group">
+    <label>🛑 Stop loss <i>(price level)</i></label>
+    <div class="input-field">
+      <span>⛔</span>
+      <input type="number" id="stopLoss" value="4452" step="1" placeholder="e.g., 4452">
+    </div>
+  </div>
+
+  <!-- Stop distance display (helper) -->
+  <div class="calc-preview" style="margin-top: -0.5rem;">
+    <div class="info-row">
+      <span class="info-label">📏 Stop distance (Entry - Stop Loss):</span>
+      <span class="info-value" id="stopDistanceDisplay">0.00</span>
+    </div>
+  </div>
+
+  <!-- Lot Size field (output) - will be auto-calculated -->
+  <div class="input-group">
+    <label>🎯 Lot size <i>(auto-calculated)</i></label>
+    <div class="input-field lot-size-field">
+      <span>📦</span>
+      <input type="number" id="lotSizeOutput" step="0.01" placeholder="calculated lot size" readonly>
+    </div>
+    <div class="distance-warning" id="warningMsg"></div>
+  </div>
+
+  <!-- Submit button (only active if both checkboxes are ticked) -->
+  <button id="submitBtn" class="submit-btn" disabled>✓ Validate & Submit</button>
+
+  <!-- dynamic feedback -->
+  <div id="infoMessage" class="info-message">
+    ⚡ Both checkboxes must be checked to enable submit. Lot size updates live.
+  </div>
+</div>
+
+<script src="js.js"></script>
+</body>
+</html>

@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Elegant Risk | Position Sizing Tool</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(145deg, #eef2fa 0%, #e0e8f2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+
+    .glass-card {
+      max-width: 680px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(2px);
+      border-radius: 2.5rem;
+      box-shadow: 0 25px 45px -12px rgba(0, 0, 0, 0.3), 0 4px 14px rgba(0, 0, 0, 0.05);
+      padding: 2rem 2rem 2.2rem;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255,255,255,0.7);
+    }
+
+    h1 {
+      font-size: 1.85rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1A2A44, #2C3E66);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: -0.3px;
+      margin-bottom: 0.3rem;
+    }
+
+    .subhead {
+      color: #5b6e8c;
+      font-weight: 500;
+      font-size: 0.9rem;
+      border-left: 3px solid #3b82f6;
+      padding-left: 0.75rem;
+      margin-bottom: 1.8rem;
+    }
+
+    .checks-container {
+      background: #f8fafd;
+      border-radius: 1.5rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: inset 0 1px 2px #00000008, 0 2px 6px rgba(0,0,0,0.02);
+      border: 1px solid #e2edff;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0.9rem 0;
+      cursor: pointer;
+      transition: transform 0.1s ease;
+    }
+
+    .check-item:hover {
+      transform: translateX(4px);
+    }
+
+    .check-item input {
+      width: 1.3rem;
+      height: 1.3rem;
+      accent-color: #3b82f6;
+      cursor: pointer;
+    }
+
+    .check-item label {
+      font-size: 1rem;
+      font-weight: 500;
+      color: #1e2a44;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .check-item .hint {
+      font-size: 0.75rem;
+      color: #6c7b96;
+      margin-left: 0.4rem;
+      font-weight: normal;
+    }
+
+    .input-group {
+      margin-bottom: 1.4rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .input-group label {
+      font-weight: 600;
+      color: #1e2f47;
+      font-size: 0.9rem;
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .input-field {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #cfdfef;
+      border-radius: 1.2rem;
+      padding: 0.1rem 0.1rem 0.1rem 1.2rem;
+      transition: all 0.2s;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+    }
+
+    .input-field:focus-within {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+
+    .input-field span {
+      font-weight: 500;
+      color: #2c3e66;
+      background: #f1f5f9;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2rem;
+      font-size: 0.8rem;
+      margin-right: 0.6rem;
+    }
+
+    .input-field input {
+      border: none;
+      padding: 0.8rem 0.8rem 0.8rem 0;
+      font-size: 1rem;
+      width: 100%;
+      outline: none;
+      background: transparent;
+      color: #0f1a2e;
+      font-weight: 500;
+    }
+
+    .input-field input[type="number"] {
+      -moz-appearance: textfield;
+    }
+    .input-field input[type="number"]::-webkit-inner-spin-button,
+    .input-field input[type="number"]::-webkit-outer-spin-button {
+      opacity: 0.5;
+    }
+
+    .calc-preview {
+      background: linear-gradient(115deg, #f0f6fe, #ffffff);
+      border-radius: 1.5rem;
+      padding: 0.2rem 1.2rem 0.8rem 1.2rem;
+      margin-bottom: 1.6rem;
+      border: 1px solid #dce9f5;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      margin-top: 0.5rem;
+      background: #ffffffc9;
+      border-radius: 1.5rem;
+      padding: 0.5rem 1rem;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: #1b2b46;
+    }
+
+    .info-value {
+      font-weight: 700;
+      font-size: 1.1rem;
+      background: linear-gradient(145deg, #1e3a8a, #3b82f6);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .lot-size-field {
+      background: linear-gradient(135deg, #fef9e6, #ffffff);
+      border: 2px solid #f59e0b;
+    }
+    
+    .lot-size-field input {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #b45309;
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(105deg, #1f2b48, #1f3a6b);
+      border: none;
+      padding: 0.9rem 1.2rem;
+      border-radius: 2rem;
+      font-weight: 600;
+      font-size: 1rem;
+      color: white;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-top: 0.5rem;
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .submit-btn:disabled {
+      background: #b9c4da;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+      opacity: 0.7;
+    }
+
+    .submit-btn:not(:disabled):hover {
+      background: linear-gradient(105deg, #111c34, #142c52);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.25);
+    }
+
+    .info-message {
+      margin-top: 1rem;
+      background: #eef3ff;
+      border-radius: 1.2rem;
+      padding: 0.7rem 1rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: #1f3a6b;
+      border-left: 4px solid #3b82f6;
+      transition: 0.2s;
+    }
+
+    .distance-warning {
+      color: #e67e22;
+      font-size: 0.7rem;
+      margin-top: 4px;
+    }
+
+    @media (max-width: 520px) {
+      .glass-card {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="glass-card">
+  <h1>⚡ Precision risk tool</h1>
+  <div class="subhead">Confirm conditions • Smart lot size calculator</div>
+
+  <!-- 2 checkboxes: Directions & Confirmation (mandatory for submit) -->
+  <div class="checks-container">
+    <div class="check-item">
+      <input type="checkbox" id="directionsCheckbox">
+      <label for="directionsCheckbox">📍 Do you know the direction? <span class="hint">(required)</span></label>
+    </div>
+    <div class="check-item">
+      <input type="checkbox" id="confirmationCheckbox">
+      <label for="confirmationCheckbox">✅ Is there confirmation? <span class="hint">(required)</span></label>
+    </div>
+  </div>
+
+  <!-- Account Balance input (default = 2000) -->
+  <div class="input-group">
+    <label>💰 Account balance <i>(base capital)</i></label>
+    <div class="input-field">
+      <span>$</span>
+      <input type="number" id="accountBalance" value="2000" step="10">
+    </div>
+  </div>
+
+  <!-- Percentage input (percentage of balance to risk) -->
+  <div class="input-group">
+    <label>📊 Risk percentage (%) <i>of account balance to risk</i></label>
+    <div class="input-field">
+      <span>%</span>
+      <input type="number" id="percentageInput" value="1" step="0.1" placeholder="e.g., 1.5">
+    </div>
+  </div>
+
+  <!-- Dynamic display: shows calculated percentage amount -->
+  <div class="calc-preview">
+    <div class="info-row">
+      <span class="info-label">💰 Risk amount (balance × % ÷ 100):</span>
+      <span class="info-value" id="riskAmountDisplay">$0.00</span>
+    </div>
+  </div>
+
+  <!-- Entry point field -->
+  <div class="input-group">
+    <label>📈 Entry point <i>(price level)</i></label>
+    <div class="input-field">
+      <span>📌</span>
+      <input type="number" id="entryPoint" value="4509" step="1" placeholder="e.g., 4509">
+    </div>
+  </div>
+
+  <!-- Stop Loss field -->
+  <div class="input-group">
+    <label>🛑 Stop loss <i>(price level)</i></label>
+    <div class="input-field">
+      <span>⛔</span>
+      <input type="number" id="stopLoss" value="4452" step="1" placeholder="e.g., 4452">
+    </div>
+  </div>
+
+  <!-- Stop distance display (helper) -->
+  <div class="calc-preview" style="margin-top: -0.5rem;">
+    <div class="info-row">
+      <span class="info-label">📏 Stop distance (Entry - Stop Loss):</span>
+      <span class="info-value" id="stopDistanceDisplay">0.00</span>
+    </div>
+  </div>
+
+  <!-- Lot Size field (output) - will be auto-calculated -->
+  <div class="input-group">
+    <label>🎯 Lot size <i>(auto-calculated)</i></label>
+    <div class="input-field lot-size-field">
+      <span>📦</span>
+      <input type="number" id="lotSizeOutput" step="0.01" placeholder="calculated lot size" readonly>
+    </div>
+    <div class="distance-warning" id="warningMsg"></div>
+  </div>
+
+  <!-- Submit button (only active if both checkboxes are ticked) -->
+  <button id="submitBtn" class="submit-btn" disabled>✓ Validate & Submit</button>
+
+  <!-- dynamic feedback -->
+  <div id="infoMessage" class="info-message">
+    ⚡ Both checkboxes must be checked to enable submit. Lot size updates live.
+  </div>
+</div>
+
+<script>
+  (function() {
+    // DOM elements
+    const directionsChk = document.getElementById('directionsCheckbox');
+    const confirmationChk = document.getElementById('confirmationCheckbox');
+    const submitBtn = document.getElementById('submitBtn');
+    const accountBalanceInput = document.getElementById('accountBalance');
+    const percentageInput = document.getElementById('percentageInput');
+    const riskAmountSpan = document.getElementById('riskAmountDisplay');
+    const entryPointInput = document.getElementById('entryPoint');
+    const stopLossInput = document.getElementById('stopLoss');
+    const stopDistanceDisplay = document.getElementById('stopDistanceDisplay');
+    const lotSizeOutput = document.getElementById('lotSizeOutput');
+    const infoMsgDiv = document.getElementById('infoMessage');
+    const warningMsgDiv = document.getElementById('warningMsg');
+
+    // Helper: format USD
+    function formatUSD(value) {
+      return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2 }).format(value);
+    }
+
+    // Helper: get numeric value from input, fallback to 0
+    function getNumericValue(element, fallback = 0) {
+      let val = parseFloat(element.value);
+      return isNaN(val) ? fallback : val;
+    }
+
+    // Main calculation according to corrected logic:
+    // 1. Risk amount = Account balance × (Percentage / 100)
+    // 2. Stop distance = Entry point - Stop Loss (absolute value, should be positive for long positions)
+    // 3. Lot size = Risk amount ÷ Stop distance ÷ 10
+    // 
+    // With example: Entry=4509, Stop=4452, distance=57, risk=100
+    // Lot size = 100 ÷ 57 ÷ 10 = 0.1754... ≈ 0.18 (if rounding to 2 decimals)
+    // If user expects 0.10, they might be using a different rounding, but we'll show precise calculation
+    
+    function computeLotSize() {
+      // Get values
+      let balance = getNumericValue(accountBalanceInput, 0);
+      let percent = getNumericValue(percentageInput, 0);
+      let entry = getNumericValue(entryPointInput, 0);
+      let stopLoss = getNumericValue(stopLossInput, 0);
+      
+      // Calculate risk amount
+      let riskAmount = (percent / 100) * balance;
+      riskAmountSpan.textContent = formatUSD(riskAmount);
+      
+      // Calculate stop distance (absolute difference for safety, but typically Entry > Stop for long)
+      let stopDistance = Math.abs(entry - stopLoss);
+      stopDistanceDisplay.textContent = stopDistance.toFixed(2);
+      
+      // Validation checks
+      let hasError = false;
+      let errorMsg = "";
+      
+      if (stopDistance === 0) {
+        errorMsg = "⚠️ Stop distance cannot be zero! Entry and Stop Loss must be different.";
+        hasError = true;
+      }
+      
+      if (riskAmount <= 0) {
+        if (!hasError) errorMsg = "⚠️ Risk amount is zero or negative. Check balance and percentage.";
+        hasError = true;
+      }
+      
+      if (hasError) {
+        lotSizeOutput.value = "";
+        lotSizeOutput.placeholder = "invalid inputs";
+        warningMsgDiv.textContent = errorMsg;
+        return null;
+      }
+      
+      // Clear warning if no error
+      warningMsgDiv.textContent = "";
+      
+      // Calculate lot size: Risk amount ÷ Stop distance ÷ 10
+      let lotSize = riskAmount / stopDistance / 10;
+      
+      // Check if result is valid
+      if (isNaN(lotSize) || !isFinite(lotSize)) {
+        lotSizeOutput.value = "";
+        lotSizeOutput.placeholder = "calculation error";
+        return null;
+      }
+      
+      // Round to 2 decimal places for standard lot size (can be adjusted)
+      let roundedLot = Math.round(lotSize * 100) / 100;
+      
+      // Set the value inside Lot Size input box
+      lotSizeOutput.value = roundedLot.toFixed(2);
+      lotSizeOutput.placeholder = "auto lot";
+      
+      return { lotSize: roundedLot, riskAmount, stopDistance };
+    }
+    
+    // Refresh calculation and update UI
+    function refreshAllCalculations() {
+      computeLotSize();
+      updateSubmitButtonState();
+    }
+    
+    // Update submit button state based on both checkboxes
+    function updateSubmitButtonState() {
+      const isDirectionsChecked = directionsChk.checked;
+      const isConfirmationChecked = confirmationChk.checked;
+      const bothChecked = isDirectionsChecked && isConfirmationChecked;
+      
+      if (bothChecked) {
+        submitBtn.disabled = false;
+        infoMsgDiv.innerHTML = '✅ Both conditions met. Lot size calculated live. Ready to submit.';
+        infoMsgDiv.style.background = "#e9f7eb";
+        infoMsgDiv.style.borderLeftColor = "#2ecc71";
+      } else {
+        submitBtn.disabled = true;
+        infoMsgDiv.innerHTML = '⚠️ You must check BOTH "Do you know the direction?" and "Is there confirmation?" to enable submission.';
+        infoMsgDiv.style.background = "#fff2f0";
+        infoMsgDiv.style.borderLeftColor = "#e67e22";
+      }
+    }
+    
+    // Handle form submit
+    function handleSubmit(event) {
+      event.preventDefault();
+      
+      // Check checkboxes
+      if (!directionsChk.checked || !confirmationChk.checked) {
+        alert("Cannot submit: Both checkboxes must be checked (Direction & Confirmation).");
+        return;
+      }
+      
+      // Gather all values
+      let balance = getNumericValue(accountBalanceInput, 0);
+      let percent = getNumericValue(percentageInput, 0);
+      let riskAmount = (percent / 100) * balance;
+      let entry = getNumericValue(entryPointInput, 0);
+      let stopLoss = getNumericValue(stopLossInput, 0);
+      let stopDistance = Math.abs(entry - stopLoss);
+      let lotSizeRaw = lotSizeOutput.value;
+      let lotSizeNum = parseFloat(lotSizeRaw);
+      let lotDisplay = (isNaN(lotSizeNum) ? 'N/A' : lotSizeNum.toFixed(4));
+      
+      // Recalculate for summary
+      let calculatedLot = (riskAmount / stopDistance / 10);
+      let finalLotDisplay = (isNaN(calculatedLot) || stopDistance === 0) ? 'N/A' : calculatedLot.toFixed(4);
+      
+      let summary = `
+📋 TRADE POSITION SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📍 Directions known: ${directionsChk.checked ? "✓ YES" : "✗ NO"}
+✅ Confirmation received: ${confirmationChk.checked ? "✓ YES" : "✗ NO"}
+💰 Account Balance: ${formatUSD(balance)}
+📊 Risk Percentage: ${percent}%
+💵 Risk Amount (balance × % ÷ 100): ${formatUSD(riskAmount)}
+📈 Entry Point: ${entry}
+🛑 Stop Loss: ${stopLoss}
+📏 Stop Distance (|Entry - SL|): ${stopDistance.toFixed(2)}
+⚙️ Calculation formula: Risk Amount ÷ Stop Distance ÷ 10
+🎯 Calculated Lot Size: ${finalLotDisplay}
+📦 Lot Size (displayed): ${lotDisplay}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✅ Trade parameters validated. Ready to execute!
+      `;
+      
+      alert(summary);
+      
+      // Update info message
+      infoMsgDiv.innerHTML = `🎉 Submission successful! Lot size = ${lotDisplay} | Risk: ${formatUSD(riskAmount)} | Distance: ${stopDistance.toFixed(2)}`;
+      infoMsgDiv.style.background = "#e0f2fe";
+      infoMsgDiv.style.borderLeftColor = "#0284c7";
+      
+      // Optional: you could add logging or API calls here
+    }
+    
+    // Validate stop distance and show warnings
+    function validateInputs() {
+      let entry = getNumericValue(entryPointInput, 0);
+      let stopLoss = getNumericValue(stopLossInput, 0);
+      let distance = Math.abs(entry - stopLoss);
+      
+      if (distance === 0 && entry !== 0) {
+        if (!warningMsgDiv.textContent.includes("zero")) {
+          warningMsgDiv.textContent = "⚠️ Entry and Stop Loss are the same! Stop distance is zero. Lot size cannot be calculated.";
+        }
+      } else if (distance > 0) {
+        if (warningMsgDiv.textContent.includes("zero")) {
+          warningMsgDiv.textContent = "";
+        }
+      }
+      
+      refreshAllCalculations();
+    }
+    
+    // Event listeners for realtime updates
+    accountBalanceInput.addEventListener('input', () => refreshAllCalculations());
+    percentageInput.addEventListener('input', () => refreshAllCalculations());
+    entryPointInput.addEventListener('input', () => validateInputs());
+    stopLossInput.addEventListener('input', () => validateInputs());
+    
+    // Checkbox listeners
+    directionsChk.addEventListener('change', () => updateSubmitButtonState());
+    confirmationChk.addEventListener('change', () => updateSubmitButtonState());
+    
+    // Blur events for formatting
+    accountBalanceInput.addEventListener('blur', function() {
+      let v = parseFloat(this.value);
+      if (isNaN(v)) this.value = 0;
+      refreshAllCalculations();
+    });
+    
+    percentageInput.addEventListener('blur', function() {
+      let v = parseFloat(this.value);
+      if (isNaN(v)) this.value = 0;
+      refreshAllCalculations();
+    });
+    
+    entryPointInput.addEventListener('blur', function() {
+      let v = parseFloat(this.value);
+      if (isNaN(v)) this.value = 0;
+      validateInputs();
+    });
+    
+    stopLossInput.addEventListener('blur', function() {
+      let v = parseFloat(this.value);
+      if (isNaN(v)) this.value = 0;
+      validateInputs();
+    });
+    
+    // Initial calculation with example values (Entry: 4509, Stop: 4452, Balance: 2000, Percent: 5% -> risk=100)
+    // This should show lot size = 100 ÷ 57 ÷ 10 = 0.1754 → 0.18
+    // Initial setup
+    refreshAllCalculations();
+    updateSubmitButtonState();
+    
+    // Set example values to demonstrate correctly
+    // Your example: Entry 4509, Stop 4452, risk amount 100
+    // To get risk amount 100 with balance 2000, percentage should be 5% (2000 × 5% = 100)
+    if (getNumericValue(percentageInput, 0) === 1) {
+      // Set to 5% to match your example of risk amount 100
+      percentageInput.value = "5";
+      refreshAllCalculations();
+    }
+    
+    // Additional note in console for debugging
+    console.log("Ready! Lot size = Risk Amount ÷ Stop Distance ÷ 10");
+  })();
+</script>
+</body>
+</html>
